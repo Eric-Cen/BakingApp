@@ -1,14 +1,18 @@
-package com.eightmin4mile.goandroid.bakingapp;
+package com.eightmin4mile.goandroid.bakingapp.ui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -47,11 +51,22 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.recipeTextView.setText(recipeItem.getName());
 
-        String ingrident = "Ingredients #" + recipeItem.getIngredients().size();
+        String ingrident = recipeItem.getIngredients().size() + " ingredients";
         holder.ingredientTextView.setText(ingrident);
 
-        String step = "Steps #" + recipeItem.getSteps().size();
-        holder.stepTextView.setText(step);
+
+        String stringUrl = recipeItem.getImage();
+
+        if(stringUrl.isEmpty()){
+            // use local image
+            holder.imageView.setImageResource(R.drawable.image_not_available);
+        } else {
+            // load image from the network with Picasso
+            Picasso.with(mContext)
+                    .load(stringUrl)
+                    .error(R.drawable.image_not_available)
+                    .into(holder.imageView);
+        }
 
     }
 
@@ -80,18 +95,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         TextView recipeTextView;
         TextView ingredientTextView;
-        TextView stepTextView;
+        ImageView imageView;
 
         public RecipeViewHolder(View itemView){
 
             super(itemView);
             recipeTextView = (TextView)itemView.findViewById(R.id.tv_main_recipe);
             ingredientTextView = (TextView)itemView.findViewById(R.id.tv_main_ingredient);
-            stepTextView = (TextView)itemView.findViewById(R.id.tv_main_step);
+            imageView = (ImageView)itemView.findViewById(R.id.iv_main_image);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
+            // pass the current recipe item to start the detail fragment
+            int elementId = getAdapterPosition();
+            mItemClickListener.onItemClickListener(elementId);
+
 
         }
     }

@@ -19,8 +19,8 @@ public class SampleData {
         List<Ingredient> newIngredientList = new ArrayList<>(count);
         for(int i=0; i<count; i++){
             Ingredient newIngredient= getIngredient();
-            newIngredient.setQuantiy(
-                    newIngredient.getQuantiy() + i
+            newIngredient.setQuantity(
+                    newIngredient.getQuantity() + i
             );
             newIngredientList.add(newIngredient);
         }
