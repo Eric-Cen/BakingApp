@@ -25,6 +25,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Utility {
 
+    //prevent Utility class from being instantiated.
+    private Utility(){
+    }
+
     private static final String TAG = "Utility";
     public static void showToastMessage(Context context, String msg){
         Toast.makeText(context, msg, Toast.LENGTH_SHORT)

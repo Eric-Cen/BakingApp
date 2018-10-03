@@ -38,9 +38,6 @@ public class StepListFragment extends Fragment
     RecyclerView.LayoutManager layoutManager;
     StepAdapter stepAdapter;
 
-    public StepListFragment() {
-    }
-
     public static StepListFragment newInstance() {
         StepListFragment f = new StepListFragment();
         return f;

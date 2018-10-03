@@ -32,9 +32,6 @@ public class StepFragment extends Fragment {
     private int stepId;
     private ArrayList<Step> steps;
 
-    public StepFragment() {
-    }
-
     public static StepFragment newInstance(int stepId, ArrayList<Step> stepArrayList) {
         StepFragment f = new StepFragment();
 

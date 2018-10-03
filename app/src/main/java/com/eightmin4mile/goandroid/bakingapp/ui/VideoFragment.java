@@ -45,18 +45,22 @@ public class VideoFragment extends Fragment
 
     private static final String TAG = "VideoFragment";
 
+    private final String VIDEO_POSITION = "position";
+    private final String VIDEO_URL = "video_url";
+    private final String VIDEO_IS_PLAYING = "is_playing";
+
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
+    private long position;
+    private boolean isPlaying;
+
 
     private String stringUrl;
 
-    public VideoFragment(){
-    }
-
-    public static VideoFragment newInstance(String urlString){
+    public static VideoFragment newInstance(String urlString) {
         VideoFragment f = new VideoFragment();
 
         Bundle args = new Bundle();
@@ -71,17 +75,25 @@ public class VideoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            position = 0;
+            isPlaying = true;
+        } else {
+            position = savedInstanceState.getLong(VIDEO_POSITION);
+            stringUrl = savedInstanceState.getString(VIDEO_URL);
+            isPlaying = savedInstanceState.getBoolean(VIDEO_IS_PLAYING);
+        }
 
         View view = inflater.inflate(R.layout.fragment_video, container, false);
 
-        mPlayerView = (SimpleExoPlayerView)view.findViewById(R.id.playerView);
+        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.playerView);
 
 
-        if(getArguments().containsKey(URL_ARG)) {
+        if (getArguments().containsKey(URL_ARG)) {
             stringUrl = getArguments().getString(URL_ARG);
         }
 
-        if(stringUrl == null || stringUrl.isEmpty()) {
+        if (stringUrl == null || stringUrl.isEmpty()) {
             Log.d(TAG, "onCreateView: stringUrl = null or \"\"");
         } else {
 
@@ -130,6 +142,7 @@ public class VideoFragment extends Fragment
 
     /**
      * Initialize ExoPlayer.
+     *
      * @param mediaUri The URI of the sample to play.
      */
     private void initializePlayer(Uri mediaUri) {
@@ -148,7 +161,8 @@ public class VideoFragment extends Fragment
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo(position);
+            mExoPlayer.setPlayWhenReady(isPlaying);
         }
     }
 
@@ -164,16 +178,18 @@ public class VideoFragment extends Fragment
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(mExoPlayer != null) {
+    public void onPause() {
+        super.onPause();
+        if (mExoPlayer != null) {
+            position = mExoPlayer.getCurrentPosition();
+            isPlaying = mExoPlayer.getPlayWhenReady();
             releasePlayer();
         }
-        if(mMediaSession != null){
+        if (mMediaSession != null) {
             mMediaSession.setActive(false);
         }
-
     }
+
 
     /**
      * Media Session Callbacks, where all external clients control the player.
@@ -213,10 +229,10 @@ public class VideoFragment extends Fragment
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
-        } else if((playbackState == ExoPlayer.STATE_READY)){
+        } else if ((playbackState == ExoPlayer.STATE_READY)) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                     mExoPlayer.getCurrentPosition(), 1f);
         }
@@ -238,8 +254,8 @@ public class VideoFragment extends Fragment
     /**
      * Broadcase Receiver registered to receive the MEDIA_BUTTON intent coming from clients
      */
-    public static class MediaReceiver extends BroadcastReceiver{
-        public MediaReceiver(){
+    public static class MediaReceiver extends BroadcastReceiver {
+        public MediaReceiver() {
 
         }
 
@@ -249,4 +265,13 @@ public class VideoFragment extends Fragment
         }
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(VIDEO_POSITION, position);
+        outState.putString(VIDEO_URL, stringUrl);
+        outState.putBoolean(VIDEO_IS_PLAYING, isPlaying);
+    }
 }

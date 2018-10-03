@@ -31,9 +31,6 @@ public class IngredientFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     IngredientAdapter ingredientAdapter;
 
-    public IngredientFragment() {
-    }
-
 
     public static IngredientFragment newInstance(){
         IngredientFragment f = new IngredientFragment();
