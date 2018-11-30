@@ -90,6 +90,5 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Perform any action when the last AppWidget instance for this provider is deleted
-
     }
 }

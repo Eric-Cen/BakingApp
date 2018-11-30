@@ -60,7 +60,6 @@ public class WidgetUpdateService extends IntentService {
                 }
             }
         }
-
     }
 
     private void updateWidget(String name, ArrayList<Ingredient>ingredientList){
