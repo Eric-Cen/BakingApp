@@ -2,7 +2,7 @@
 
 Project 4 of Udacity's Android Developer Nanodegree
 
-This app loads recipe JSON data from Internet and then displays the recipe lists.  
+This app loads recipe JSON data from Internet and then displays the recipe list and step list.  
 It shows users step by step to cook a selected recipe, and plays video in exoplayer.
 
 ### Libraries Used:
