@@ -71,6 +71,12 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // start the intent service update widget action,
         // the service takes care of updating the widgets UI
+        Log.d("IngredientWidgetProvider", "onUpdate: ==> ");
+        if (ingredientArrayList!=null) {
+            Log.d("IngredientWidgetProvider", "onUpdate: ==> ingredientArrayList.size() = " + ingredientArrayList.size());
+        } else {
+            Log.d("IngredientWidgetProvider", "onUpdate: ==> ingredientArrayList is null");
+        }
         WidgetUpdateService.startActionUpdateWidget(context, recipeName, ingredientArrayList);
 
     }

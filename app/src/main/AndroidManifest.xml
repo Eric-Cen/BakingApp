@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,8 @@
         </activity>
         <activity android:name=".ui.DetailActivity" />
 
-        <receiver android:name=".ui.VideoFragment$MediaReceiver">
+        <receiver android:name=".ui.VideoFragment$MediaReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
@@ -33,7 +34,8 @@
             android:name=".widget.IngredientWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name=".widget.IngredientWidgetProvider">
+        <receiver android:name=".widget.IngredientWidgetProvider"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
