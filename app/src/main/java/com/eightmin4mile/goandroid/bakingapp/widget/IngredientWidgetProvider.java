@@ -68,10 +68,12 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        OneTimeWorkRequest widgetWorkRequest = WidgetWorker.getOneTimeRequest(recipeName, ingredientList);
-        WorkManager.getInstance(context)
-            .beginUniqueWork(WidgetWorker.TAG, ExistingWorkPolicy.REPLACE, widgetWorkRequest)
-            .enqueue();
+        if (recipeName != null && ingredientList != null) {
+            OneTimeWorkRequest widgetWorkRequest = WidgetWorker.getOneTimeRequest(recipeName, ingredientList);
+            WorkManager.getInstance(context)
+                .beginUniqueWork(WidgetWorker.TAG, ExistingWorkPolicy.REPLACE, widgetWorkRequest)
+                .enqueue();
+        }
     }
 
 
