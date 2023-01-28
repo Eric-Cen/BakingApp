@@ -2,37 +2,34 @@ package com.eightmin4mile.goandroid.bakingapp.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Ingredient;
 
 import java.util.List;
 
-/**
- * Created by goandroid on 8/16/18.
- */
-
 public class IngredientAdapter
-        extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
+    extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
 
     private static final String TAG = "IngredientAdapter";
     private Context mContext;
     private List<Ingredient> ingredients;
 
-    public IngredientAdapter(Context context){
+    public IngredientAdapter(Context context) {
         mContext = context;
     }
 
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_ingredient_row, parent, false);
+            .inflate(R.layout.item_ingredient_row, parent, false);
         return new IngredientViewHolder(view);
     }
 
@@ -47,10 +44,9 @@ public class IngredientAdapter
         holder.quantityTextView.setText(String.valueOf(quantity));
         holder.unitTextView.setText(ingredientItem.getMeasure());
 
-        if(position % 2 == 0){
+        if (position % 2 == 0) {
             holder.constraintLayout.setBackgroundColor(Color.parseColor("#D3D3D3"));
         }
-
     }
 
     @Override
@@ -58,20 +54,20 @@ public class IngredientAdapter
         return ingredients == null ? 0 : ingredients.size();
     }
 
-    public Ingredient getItem(int position){
+    public Ingredient getItem(int position) {
         return ingredients.get(position);
     }
 
     public List<Ingredient> getIngredients() {
-        return  ingredients;
+        return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> newIngredients){
+    public void setIngredients(List<Ingredient> newIngredients) {
         ingredients = newIngredients;
         notifyDataSetChanged();
     }
 
-    class IngredientViewHolder extends RecyclerView.ViewHolder{
+    class IngredientViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         TextView quantityTextView;
         TextView unitTextView;
@@ -80,10 +76,10 @@ public class IngredientAdapter
 
         public IngredientViewHolder(View itemView) {
             super(itemView);
-            nameTextView = (TextView)itemView.findViewById(R.id.tv_ingredient_name);
-            quantityTextView = (TextView)itemView.findViewById(R.id.tv_ingredient_quantity);
-            unitTextView = (TextView)itemView.findViewById(R.id.tv_ingredient_unit);
-            constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.layout_ingredient);
+            nameTextView = (TextView) itemView.findViewById(R.id.tv_ingredient_name);
+            quantityTextView = (TextView) itemView.findViewById(R.id.tv_ingredient_quantity);
+            unitTextView = (TextView) itemView.findViewById(R.id.tv_ingredient_unit);
+            constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.layout_ingredient);
         }
     }
 }

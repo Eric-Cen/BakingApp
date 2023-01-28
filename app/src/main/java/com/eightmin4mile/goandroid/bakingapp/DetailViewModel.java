@@ -1,18 +1,10 @@
 package com.eightmin4mile.goandroid.bakingapp;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.eightmin4mile.goandroid.bakingapp.data.Ingredient;
 import com.eightmin4mile.goandroid.bakingapp.data.Recipe;
-import com.eightmin4mile.goandroid.bakingapp.data.Step;
-
-import java.util.List;
-
-/**
- * Created by goandroid on 7/16/18.
- */
 
 public class DetailViewModel extends ViewModel {
 
@@ -36,7 +28,7 @@ public class DetailViewModel extends ViewModel {
         this.recipeLiveData.setValue(recipe);
     }
 
-    public  LiveData<Recipe> getRecipe(){
+    public LiveData<Recipe> getRecipe(){
         return recipeLiveData;
     }
 

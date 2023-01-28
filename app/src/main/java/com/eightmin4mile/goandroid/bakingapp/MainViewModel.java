@@ -1,11 +1,12 @@
 package com.eightmin4mile.goandroid.bakingapp;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.eightmin4mile.goandroid.bakingapp.data.AppDatabase;
 import com.eightmin4mile.goandroid.bakingapp.data.Recipe;
@@ -19,10 +20,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by goandroid on 7/16/18.
- */
-
 public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = "MainViewModel";
@@ -30,7 +27,7 @@ public class MainViewModel extends AndroidViewModel {
     private MutableLiveData<List<Recipe>> recipeList;
     private AppDatabase database;
 
-    public  MainViewModel (Application application){
+    public MainViewModel(Application application) {
         super(application);
 
         database = AppDatabase.getsInstance(this.getApplication());
@@ -38,16 +35,15 @@ public class MainViewModel extends AndroidViewModel {
         recipeList = new MutableLiveData<>();
     }
 
-
     public LiveData<List<Recipe>> getRecipeList(
-            @Nullable final SimpleIdlingResource idlingResource) {
+        @Nullable final SimpleIdlingResource idlingResource) {
 
         loadRecipeData(idlingResource);
 
         return recipeList;
     }
 
-    public void setRecipeList(List<Recipe> newRecipes){
+    public void setRecipeList(List<Recipe> newRecipes) {
         recipeList.setValue(newRecipes);
     }
 
@@ -59,11 +55,11 @@ public class MainViewModel extends AndroidViewModel {
         }
 
         RetrofitRequest mRetrofitRequest =
-                new Retrofit.Builder()
-                        .baseUrl(RetrofitRequest.WEB_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                        .create(RetrofitRequest.class);
+            new Retrofit.Builder()
+                .baseUrl(RetrofitRequest.WEB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RetrofitRequest.class);
 
         final List<Recipe> newData = new ArrayList<>();
         Call<List<Recipe>> call = mRetrofitRequest.getRecipeResult();
@@ -85,7 +81,7 @@ public class MainViewModel extends AndroidViewModel {
                     public void run() {
                         for (Recipe newRecipe : newData) {
                             Recipe recipe = database.recipeDao().loadRecipeById(newRecipe.getId());
-                            if(recipe == null) {
+                            if (recipe == null) {
                                 // add the database only if it has an unique id
                                 database.recipeDao().insertRecipe(newRecipe);
                             }
@@ -96,26 +92,21 @@ public class MainViewModel extends AndroidViewModel {
                 if (idlingResource != null) {
                     idlingResource.setIdleState(true);
                 }
-
             }
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + "Retrofit error");
                 Log.d(TAG, "onFailure: can't retrieve recipe data");
-
             }
         });
 
         Log.d(TAG, "getInternetRecipeData: returning newData.size() = " + newData.size());
-        if(newData!= null && newData.size()>0){
+        if (newData != null && newData.size() > 0) {
             Log.d(TAG, "getInternetRecipeData: returning newData");
         } else {
             Log.d(TAG, "getInternetRecipeData: returning null");
 
         }
-
-
     }
-
 }

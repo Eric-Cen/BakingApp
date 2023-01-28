@@ -4,38 +4,36 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.eightmin4mile.goandroid.bakingapp.R;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Ingredient;
 
 import java.util.ArrayList;
-
-
-/**
- * Created by goandroid on 9/6/18.
- */
+import java.util.List;
 
 public class IngredientWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "IngredientWidgetProvid";
 
     private static String recipeName;
-    public static ArrayList<Ingredient> ingredientArrayList;
+    public static List<Ingredient> ingredientList;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                               int appWidgetId, String name, ArrayList<Ingredient> ingredients) {
+                                int appWidgetId, String name, List<Ingredient> ingredients) {
 
         recipeName = name;
-        ingredientArrayList = ingredients;
+        ingredientList = ingredients;
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        if(recipeName == null){
+        if (recipeName == null) {
             Log.d(TAG, "updateAppWidget: do nothing for recipeName = null");
         } else {
 
@@ -45,7 +43,8 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
 
             Bundle bundle = new Bundle();
             bundle.putString("name", recipeName);
-            bundle.putParcelableArrayList("ingredients", ingredientArrayList);
+            ArrayList<Ingredient> items = new ArrayList<>(ingredientList);
+            bundle.putParcelableArrayList("ingredients", items);
             intent.putExtra("data", bundle);
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.list_view);
@@ -60,25 +59,19 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
                                                AppWidgetManager appWidgetManager,
                                                int[] appWidgetIds,
                                                String name,
-                                               ArrayList<Ingredient> ingredientArrayList){
+                                               List<Ingredient> ingredientArrayList) {
 
-        for( int appWidgetId : appWidgetIds){
+        for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId, name, ingredientArrayList);
         }
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // start the intent service update widget action,
-        // the service takes care of updating the widgets UI
-        Log.d("IngredientWidgetProvider", "onUpdate: ==> ");
-        if (ingredientArrayList!=null) {
-            Log.d("IngredientWidgetProvider", "onUpdate: ==> ingredientArrayList.size() = " + ingredientArrayList.size());
-        } else {
-            Log.d("IngredientWidgetProvider", "onUpdate: ==> ingredientArrayList is null");
-        }
-        WidgetUpdateService.startActionUpdateWidget(context, recipeName, ingredientArrayList);
-
+        OneTimeWorkRequest widgetWorkRequest = WidgetWorker.getOneTimeRequest(recipeName, ingredientList);
+        WorkManager.getInstance(context)
+            .beginUniqueWork(WidgetWorker.TAG, ExistingWorkPolicy.REPLACE, widgetWorkRequest)
+            .enqueue();
     }
 
 
@@ -89,12 +82,15 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-    // Perform any action when an AppWidget for this provider is instantiated
-
+        // Perform any action when an AppWidget for this provider is instantiated
+        // Bug: WorkManager repeatedly triggers onUpdate on App widget
+        // https://issuetracker.google.com/issues/180436098
+        DummyWorker.schedule(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         // Perform any action when the last AppWidget instance for this provider is deleted
+        DummyWorker.remove(context);
     }
 }

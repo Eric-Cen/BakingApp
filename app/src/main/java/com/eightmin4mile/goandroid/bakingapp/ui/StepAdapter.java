@@ -1,35 +1,32 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Step;
 
 import java.util.List;
 
-/**
- * Created by goandroid on 7/29/18.
- */
-
-public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder>{
+public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
 
     private static final String TAG = "StepAdapter";
     private Context mContext;
     private List<Step> stepList;
 
-    public interface StepClickListener{
+    public interface StepClickListener {
         void onItemClickListener(int itemId);
     }
 
     final private StepClickListener mStepClickListener;
 
-    public StepAdapter(Context context, StepClickListener listener){
+    public StepAdapter(Context context, StepClickListener listener) {
         mContext = context;
         mStepClickListener = listener;
     }
@@ -38,7 +35,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_step_row, parent, false);
+            .inflate(R.layout.item_step_row, parent, false);
         return new StepViewHolder(view);
     }
 
@@ -47,14 +44,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         Step stepItem = stepList.get(position);
 
         String description = "";
-        if(position >= 1){
+        if (position >= 1) {
             description = "Step #" + position + ": ";
         }
 
         description = description + stepItem.getShortDescription();
 
         holder.stepButton.setText(description);
-
     }
 
     @Override
@@ -63,15 +59,15 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     }
 
     @Nullable
-    public Step getItem(int position){
+    public Step getItem(int position) {
         return stepList.get(position);
     }
 
-    public List<Step> getStepList(){
+    public List<Step> getStepList() {
         return stepList;
     }
 
-    public void setStepList(List<Step> newStepList){
+    public void setStepList(List<Step> newStepList) {
         this.stepList = newStepList;
         notifyDataSetChanged();
     }
@@ -80,10 +76,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
         Button stepButton;
 
-        public StepViewHolder(View itemView){
+        public StepViewHolder(View itemView) {
             super(itemView);
 
-            stepButton = (Button)itemView.findViewById(R.id.bt_step);
+            stepButton = (Button) itemView.findViewById(R.id.bt_step);
 
             itemView.setOnClickListener(this);
             stepButton.setOnClickListener(this);
@@ -95,6 +91,5 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
             mStepClickListener.onItemClickListener(elementId);
 
         }
-
     }
 }

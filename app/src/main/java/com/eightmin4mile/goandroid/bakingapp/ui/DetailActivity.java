@@ -1,11 +1,12 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.eightmin4mile.goandroid.bakingapp.DetailViewModel;
 import com.eightmin4mile.goandroid.bakingapp.R;
@@ -32,7 +33,7 @@ public class DetailActivity extends AppCompatActivity {
         Recipe recipe = null;
         Intent intent = getIntent();
         if (intent != null
-                && intent.hasExtra(RECIPE_ITEM)) {
+            && intent.hasExtra(RECIPE_ITEM)) {
             recipe = intent.getParcelableExtra(RECIPE_ITEM);
 
         } else {
@@ -41,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
 
         setTitle(recipe.getName());
         setupDetailViewModel(recipe);
-
     }
 
     @Override
@@ -52,8 +52,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     private void setupDetailViewModel(Recipe newRecipe) {
-        detailViewModel = ViewModelProviders.of(this)
-                .get(DetailViewModel.class);
+        detailViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
         detailViewModel.setRecipeLiveData(newRecipe);
     }
 
@@ -66,7 +65,6 @@ public class DetailActivity extends AppCompatActivity {
             detailViewModel.setTwoPane(false);
             setupSinglePane();
         }
-
     }
 
     private void setupSinglePane() {
@@ -78,16 +76,15 @@ public class DetailActivity extends AppCompatActivity {
             fragmentManager = getSupportFragmentManager();
 
             StepListFragment stepListFragment = (StepListFragment) fragmentManager
-                    .findFragmentByTag(stepListTag);
+                .findFragmentByTag(stepListTag);
             if (stepListFragment == null) {
                 stepListFragment = StepListFragment.newInstance();
             }
 
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, stepListFragment, stepListTag)
-                    .commit();
+                .replace(R.id.fragment_container, stepListFragment, stepListTag)
+                .commit();
         }
-
     }
 
     private void setupTwoPane() {
@@ -97,23 +94,23 @@ public class DetailActivity extends AppCompatActivity {
 
         String videoTag = "video" + currentStepId;
         VideoFragment videoFragment = (VideoFragment) getSupportFragmentManager()
-                .findFragmentByTag(videoTag);
+            .findFragmentByTag(videoTag);
 
         if (videoFragment == null) {
             String urlPath = detailViewModel.getRecipe().getValue()
-                    .getSteps().get(currentStepId)
-                    .getVideoURL();
+                .getSteps().get(currentStepId)
+                .getVideoURL();
             videoFragment = VideoFragment.newInstance(urlPath);
         }
         transaction.replace(R.id.fragment_video, videoFragment, videoTag);
 
         String stepTag = "step" + currentStepId;
         StepFragment stepFragment = (StepFragment) getSupportFragmentManager()
-                .findFragmentByTag(stepTag);
+            .findFragmentByTag(stepTag);
 
         if (stepFragment == null) {
             stepFragment = StepFragment.newInstance(currentStepId,
-                    Utility.fromListtoArrayList(detailViewModel.getRecipe().getValue().getSteps()));
+                Utility.fromListtoArrayList(detailViewModel.getRecipe().getValue().getSteps()));
         }
 
         transaction.replace(R.id.fragment_step_instruction, stepFragment, stepTag);
@@ -121,7 +118,7 @@ public class DetailActivity extends AppCompatActivity {
 
         String stepListTag = "step_list";
         StepListFragment stepListFragment = (StepListFragment) getSupportFragmentManager()
-                .findFragmentByTag(stepListTag);
+            .findFragmentByTag(stepListTag);
 
         if (stepListFragment == null) {
             stepListFragment = StepListFragment.newInstance();
@@ -141,5 +138,4 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
-
 }

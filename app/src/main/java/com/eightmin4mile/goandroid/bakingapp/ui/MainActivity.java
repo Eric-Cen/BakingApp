@@ -1,20 +1,25 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.eightmin4mile.goandroid.bakingapp.MainViewModel;
 import com.eightmin4mile.goandroid.bakingapp.R;
@@ -23,11 +28,10 @@ import com.eightmin4mile.goandroid.bakingapp.Utility;
 import com.eightmin4mile.goandroid.bakingapp.data.AppDatabase;
 import com.eightmin4mile.goandroid.bakingapp.data.Ingredient;
 import com.eightmin4mile.goandroid.bakingapp.data.Recipe;
-import com.eightmin4mile.goandroid.bakingapp.widget.WidgetUpdateService;
+import com.eightmin4mile.goandroid.bakingapp.widget.WidgetWorker;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity
     implements RecipeAdapter.ItemClickListener {
@@ -35,7 +39,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     // The Idling Resource which will be null in production.
-    @Nullable private SimpleIdlingResource mIdlingResource;
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
 
     private AppDatabase mDb;
     private MainViewModel viewModel;
@@ -64,26 +69,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(Utility.isNetworkAvailable(getApplicationContext())){
+        if (Utility.isNetworkAvailable(getApplicationContext())) {
             setupViewModel();
-        } else{
+        } else {
             emptyView.setVisibility(View.VISIBLE);
             String errorMsg = getResources().getString(R.string.empty_view_text)
-                    + " "
-                    + getResources().getString(R.string.network_issue);
+                + " "
+                + getResources().getString(R.string.network_issue);
             emptyView.setText(errorMsg);
         }
-
     }
 
     private void setupViewModel() {
-        viewModel = ViewModelProviders.of(this)
-                .get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getRecipeList(mIdlingResource).observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
                 Log.d(TAG, "onChanged: Updating list of recipes from LiveData in ViewModel");
-                if(recipes != null && !recipes.isEmpty()){
+                if (recipes != null && !recipes.isEmpty()) {
                     // show recipes in recyclerview
                     emptyView.setVisibility(View.INVISIBLE);
                     recipeAdapter.setRecipeList(recipes);
@@ -98,15 +101,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private void initializeView() {
+        emptyView = (TextView) findViewById(R.id.tv_main_empty_view);
+        recipeRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
-    private void initializeView(){
-        emptyView = (TextView)findViewById(R.id.tv_main_empty_view);
-        recipeRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-
-        if(findViewById(R.id.layout_tablet) != null){
+        if (getResources().getBoolean(R.bool.isTablet)) {
             mTwoPane = true;
             recipeRecyclerView.setLayoutManager(
-                    new GridLayoutManager(getApplicationContext(), 3));
+                new GridLayoutManager(getApplicationContext(), 3));
         } else {
             mTwoPane = false;
             recipeRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -118,18 +120,20 @@ public class MainActivity extends AppCompatActivity
 
         Recipe recipe = recipeAdapter.getItem(itemId);
         ArrayList<Ingredient> ingredients = Utility.fromListtoArrayList(
-                recipe.getIngredients()
+            recipe.getIngredients()
         );
 
-        // update widget UI after user pick a recipe
-        WidgetUpdateService.startActionUpdateWidget(this,
-                recipe.getName(),
-                ingredients);
+        // update app widget UI after user pick a recipe
+        OneTimeWorkRequest widgetWorkRequest = WidgetWorker.getOneTimeRequest(recipe.getName(), ingredients);
+        WorkManager.getInstance(MainActivity.this)
+            .beginUniqueWork(WidgetWorker.TAG, ExistingWorkPolicy.REPLACE, widgetWorkRequest)
+            .enqueue();
+
 
         Intent intent = new Intent(getApplicationContext(),
-                DetailActivity.class);
+            DetailActivity.class);
         intent.putExtra(DetailActivity.RECIPE_ITEM,
-                recipe);
+            recipe);
         startActivity(intent);
 
     }

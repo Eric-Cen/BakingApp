@@ -1,12 +1,13 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.Utility;
@@ -40,7 +41,7 @@ public class StepActivity extends AppCompatActivity {
             Intent dataIntent = getIntent();
 
             if (dataIntent.hasExtra(STEP_ID_EXTRA)
-                    && dataIntent.hasExtra(STEP_LIST_EXTRA)) {
+                && dataIntent.hasExtra(STEP_LIST_EXTRA)) {
                 stepId = dataIntent.getIntExtra(STEP_ID_EXTRA, -1);
                 stepArrayList = dataIntent.getParcelableArrayListExtra(STEP_LIST_EXTRA);
                 recipeName = dataIntent.getStringExtra(NAME_EXTRA);
@@ -82,7 +83,7 @@ public class StepActivity extends AppCompatActivity {
                     loadFragments();
                 } else {
                     Utility.showToastMessage(getApplicationContext(),
-                            "This is already the very first step.");
+                        "This is already the very first step.");
                 }
 
             }
@@ -99,7 +100,7 @@ public class StepActivity extends AppCompatActivity {
                     loadFragments();
                 } else {
                     Utility.showToastMessage(getApplicationContext(),
-                            "This is already the last step.");
+                        "This is already the last step.");
                 }
             }
         });
@@ -113,11 +114,11 @@ public class StepActivity extends AppCompatActivity {
     public void loadFragments() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        String videoTag = "video"+stepId;
+        String videoTag = "video" + stepId;
         VideoFragment videoFragment =
-                (VideoFragment)getSupportFragmentManager().findFragmentByTag(videoTag);
+            (VideoFragment) getSupportFragmentManager().findFragmentByTag(videoTag);
 
-        if(videoFragment==null){
+        if (videoFragment == null) {
             String urlPath = stepArrayList.get(stepId).getVideoURL();
             videoFragment = VideoFragment.newInstance(urlPath);
         }
@@ -127,12 +128,11 @@ public class StepActivity extends AppCompatActivity {
         String stepTag = "step" + stepId;
 
         StepFragment stepFragment =
-                (StepFragment) getSupportFragmentManager().findFragmentByTag(stepTag);
+            (StepFragment) getSupportFragmentManager().findFragmentByTag(stepTag);
 
-        if(stepFragment==null){
+        if (stepFragment == null) {
             stepFragment = StepFragment.newInstance(stepId, stepArrayList);
         }
-
 
         transaction.replace(R.id.fragment_step_description, stepFragment, stepTag);
 

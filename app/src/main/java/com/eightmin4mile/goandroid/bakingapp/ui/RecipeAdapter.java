@@ -1,14 +1,14 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Recipe;
@@ -16,11 +16,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by goandroid on 6/25/18.
- */
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>{
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private static final String TAG = "RecipeAdapter";
     private Context mContext;
@@ -32,7 +29,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     final private ItemClickListener mItemClickListener;
 
-    public RecipeAdapter(Context context, ItemClickListener listener){
+    public RecipeAdapter(Context context, ItemClickListener listener) {
         mContext = context;
         mItemClickListener = listener;
     }
@@ -41,7 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.item_recipe_row, parent, false);
+            .inflate(R.layout.item_recipe_row, parent, false);
         return new RecipeViewHolder(view);
     }
 
@@ -57,17 +54,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         String stringUrl = recipeItem.getImage();
 
-        if(stringUrl.isEmpty()){
+        if (stringUrl.isEmpty()) {
             // use local image
             holder.imageView.setImageResource(R.drawable.image_not_available);
         } else {
             // load image from the network with Picasso
-            Picasso.with(mContext)
-                    .load(stringUrl)
-                    .error(R.drawable.image_not_available)
-                    .into(holder.imageView);
+            Picasso.get()
+                .load(stringUrl)
+                .error(R.drawable.image_not_available)
+                .into(holder.imageView);
         }
-
     }
 
     @Override
@@ -76,7 +72,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Nullable
-    public Recipe getItem(int position){
+    public Recipe getItem(int position) {
         return recipeList.get(position);
     }
 
@@ -97,12 +93,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         TextView ingredientTextView;
         ImageView imageView;
 
-        public RecipeViewHolder(View itemView){
+        public RecipeViewHolder(View itemView) {
 
             super(itemView);
-            recipeTextView = (TextView)itemView.findViewById(R.id.tv_main_recipe);
-            ingredientTextView = (TextView)itemView.findViewById(R.id.tv_main_ingredient);
-            imageView = (ImageView)itemView.findViewById(R.id.iv_main_image);
+            recipeTextView = (TextView) itemView.findViewById(R.id.tv_main_recipe);
+            ingredientTextView = (TextView) itemView.findViewById(R.id.tv_main_ingredient);
+            imageView = (ImageView) itemView.findViewById(R.id.iv_main_image);
 
             itemView.setOnClickListener(this);
         }
@@ -112,8 +108,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             // pass the current recipe item to start the detail fragment
             int elementId = getAdapterPosition();
             mItemClickListener.onItemClickListener(elementId);
-
-
         }
     }
 }

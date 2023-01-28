@@ -1,12 +1,9 @@
 package com.eightmin4mile.goandroid.bakingapp;
 
-import android.support.annotation.Nullable;
-import android.support.test.espresso.IdlingResource;
-import java.util.concurrent.atomic.AtomicBoolean;
+import androidx.annotation.Nullable;
+import androidx.test.espresso.IdlingResource;
 
-/**
- * Copied from Google Codelab.
- */
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SimpleIdlingResource implements IdlingResource {
 
@@ -33,6 +30,7 @@ public class SimpleIdlingResource implements IdlingResource {
 
     /**
      * Sets the new idle state, if isIdleNow is true, it pings the {@link ResourceCallback}.
+     *
      * @param isIdleNow false if there are pending operations, true if idle.
      */
     public void setIdleState(boolean isIdleNow) {

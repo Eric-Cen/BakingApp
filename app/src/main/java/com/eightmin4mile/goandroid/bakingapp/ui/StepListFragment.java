@@ -1,18 +1,20 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.eightmin4mile.goandroid.bakingapp.DetailViewModel;
 import com.eightmin4mile.goandroid.bakingapp.R;
@@ -22,12 +24,8 @@ import com.eightmin4mile.goandroid.bakingapp.data.Step;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by goandroid on 8/10/18.
- */
-
 public class StepListFragment extends Fragment
-        implements StepAdapter.StepClickListener {
+    implements StepAdapter.StepClickListener {
 
     private static final String TAG = "StepListFragment";
     public static String STEP_LIST_ARG = "step_list";
@@ -51,8 +49,7 @@ public class StepListFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_step_list, container, false);
 
-        detailViewModel = ViewModelProviders.of(getActivity())
-                .get(DetailViewModel.class);
+        detailViewModel = new ViewModelProvider(requireActivity()).get(DetailViewModel.class);
 
         Button ingredientsButton = (Button) view.findViewById(R.id.bt_ingredients);
         ingredientsButton.setOnClickListener(new View.OnClickListener() {
@@ -70,9 +67,9 @@ public class StepListFragment extends Fragment
 
                 detailViewModel.setIngredientsDisplayed(true);
                 fragmentManager.beginTransaction()
-                        .replace(layoutId, ingredientFragment, "ingredients")
-                        .addToBackStack(null)
-                        .commit();
+                    .replace(layoutId, ingredientFragment, "ingredients")
+                    .addToBackStack(null)
+                    .commit();
             }
         });
 
@@ -91,12 +88,8 @@ public class StepListFragment extends Fragment
 
     @Override
     public void onItemClickListener(int itemId) {
-        detailViewModel = ViewModelProviders.of(getActivity())
-                .get(DetailViewModel.class);
-
-
         ArrayList<Step> steps = Utility.fromListtoArrayList(
-                detailViewModel.getRecipe().getValue().getSteps());
+            detailViewModel.getRecipe().getValue().getSteps());
 
         if (detailViewModel.isTwoPane()) {//tablet
 
@@ -105,7 +98,7 @@ public class StepListFragment extends Fragment
             String stepTag = "step" + itemId;
 
             StepFragment stepFragment = (StepFragment) getActivity().getSupportFragmentManager()
-                    .findFragmentByTag(stepTag);
+                .findFragmentByTag(stepTag);
 
             if (stepFragment == null) {
                 stepFragment = StepFragment.newInstance(itemId, steps);
@@ -114,8 +107,8 @@ public class StepListFragment extends Fragment
 
             String videoTag = "video" + itemId;
             VideoFragment videoFragment =
-                    (VideoFragment) getActivity().getSupportFragmentManager()
-                            .findFragmentByTag(videoTag);
+                (VideoFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentByTag(videoTag);
 
             if (videoFragment == null) {
                 String urlPath = steps.get(itemId).getVideoURL();
@@ -124,7 +117,7 @@ public class StepListFragment extends Fragment
 
 
             FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                    .beginTransaction();
+                .beginTransaction();
             transaction.replace(R.id.fragment_step_instruction, stepFragment, stepTag);
             transaction.replace(R.id.fragment_video, videoFragment, videoTag);
             transaction.commit();
@@ -132,14 +125,12 @@ public class StepListFragment extends Fragment
 
             // start StepActivity
             Intent intent = new Intent(getActivity(),
-                    StepActivity.class);
+                StepActivity.class);
             intent.putExtra(
-                    StepActivity.NAME_EXTRA, detailViewModel.getRecipe().getValue().getName());
+                StepActivity.NAME_EXTRA, detailViewModel.getRecipe().getValue().getName());
             intent.putExtra(StepActivity.STEP_ID_EXTRA, itemId);
             intent.putParcelableArrayListExtra(StepActivity.STEP_LIST_EXTRA, steps);
             startActivity(intent);
         }
-
-
     }
 }

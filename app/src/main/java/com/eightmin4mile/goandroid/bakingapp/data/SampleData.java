@@ -3,24 +3,20 @@ package com.eightmin4mile.goandroid.bakingapp.data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by goandroid on 6/25/18.
- */
-
 public class SampleData {
-    public static Ingredient getIngredient(){
+    public static Ingredient getIngredient() {
         Ingredient ingredient = new Ingredient(2,
-                "CUP",
-                "Graham Cracker crumbs");
+            "CUP",
+            "Graham Cracker crumbs");
         return ingredient;
     }
 
-    public static List<Ingredient> getIngredientList(int count){
+    public static List<Ingredient> getIngredientList(int count) {
         List<Ingredient> newIngredientList = new ArrayList<>(count);
-        for(int i=0; i<count; i++){
-            Ingredient newIngredient= getIngredient();
+        for (int i = 0; i < count; i++) {
+            Ingredient newIngredient = getIngredient();
             newIngredient.setQuantity(
-                    newIngredient.getQuantity() + i
+                newIngredient.getQuantity() + i
             );
             newIngredientList.add(newIngredient);
         }
@@ -28,21 +24,21 @@ public class SampleData {
         return newIngredientList;
     }
 
-    public static Step getStep(){
+    public static Step getStep() {
         Step step = new Step(0,
-                "short description",
-                "description",
-                "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4",
-                "thumbnailURL");
+            "short description",
+            "description",
+            "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4",
+            "thumbnailURL");
         return step;
     }
 
-    public static List<Step> getStepList(int count){
+    public static List<Step> getStepList(int count) {
         List<Step> newList = new ArrayList<>(count);
-        for(int j=0; j<count; j++){
+        for (int j = 0; j < count; j++) {
             Step newStep = getStep();
             newStep.setThumbnailURL(
-                    newStep.getThumbnailURL() + j
+                newStep.getThumbnailURL() + j
             );
 
             newList.add(newStep);
@@ -50,24 +46,24 @@ public class SampleData {
         return newList;
     }
 
-    public static Recipe getRecipe(){
+    public static Recipe getRecipe() {
         Recipe recipe = new Recipe(1,
-                "Nutella Pie",
-                getIngredientList(5),
-                getStepList(8),
-                8,
-                "image url");
+            "Nutella Pie",
+            getIngredientList(5),
+            getStepList(8),
+            8,
+            "image url");
 
         return recipe;
     }
 
-    public static List<Recipe> getRecipeList(int count){
+    public static List<Recipe> getRecipeList(int count) {
         List<Recipe> newRecipeList = new ArrayList<>(count);
-        for(int k=0; k<count; k++){
+        for (int k = 0; k < count; k++) {
             Recipe newRecipe = getRecipe();
 
             newRecipe.setName(
-                    newRecipe.getName() + k
+                newRecipe.getName() + k
             );
 
             newRecipeList.add(newRecipe);
@@ -75,5 +71,4 @@ public class SampleData {
 
         return newRecipeList;
     }
-
 }

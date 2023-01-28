@@ -1,19 +1,16 @@
 package com.eightmin4mile.goandroid.bakingapp.data;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
-/**
- * Created by goandroid on 6/25/18.
- */
-
 @Entity(tableName = "recipe")
-public class Recipe implements Parcelable{
+public class Recipe implements Parcelable {
 
     /*
     {
@@ -40,7 +37,7 @@ public class Recipe implements Parcelable{
                   List<Ingredient> ingredients,
                   List<Step> steps,
                   int servings,
-                  String image){
+                  String image) {
         this.id = id;
         this.name = name;
         this.ingredients = ingredients;
@@ -105,14 +102,12 @@ public class Recipe implements Parcelable{
 //    int servings;
 //    String image;
 
-
-
     @Override
     public int describeContents() {
         return 0;
     }
 
-    protected Recipe(Parcel in){
+    protected Recipe(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
         this.ingredients = in.readArrayList(Ingredient.class.getClassLoader());

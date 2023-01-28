@@ -3,10 +3,6 @@ package com.eightmin4mile.goandroid.bakingapp.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by goandroid on 6/25/18.
- */
-
 public class Step implements Parcelable {
     /*
     {
@@ -28,7 +24,7 @@ public class Step implements Parcelable {
                 String shortDescription,
                 String description,
                 String videoURL,
-                String thumbnailURL){
+                String thumbnailURL) {
         this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
@@ -81,7 +77,7 @@ public class Step implements Parcelable {
         return 0;
     }
 
-    protected Step(Parcel in){
+    protected Step(Parcel in) {
         this.id = in.readInt();
         this.shortDescription = in.readString();
         this.description = in.readString();

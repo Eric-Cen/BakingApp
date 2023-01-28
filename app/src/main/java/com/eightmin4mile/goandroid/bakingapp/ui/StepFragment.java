@@ -1,10 +1,6 @@
 package com.eightmin4mile.goandroid.bakingapp.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +9,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.eightmin4mile.goandroid.bakingapp.DetailViewModel;
 import com.eightmin4mile.goandroid.bakingapp.R;
 import com.eightmin4mile.goandroid.bakingapp.data.Step;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-/**
- * Created by goandroid on 8/10/18.
- */
 
 public class StepFragment extends Fragment {
     public static final String STEP_ID_ARG = "step";
@@ -52,7 +49,7 @@ public class StepFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_step, container, false);
 
         if (getArguments().containsKey(STEP_ID_ARG)
-                && getArguments().containsKey(STEP_LIST_ARG)) {
+            && getArguments().containsKey(STEP_LIST_ARG)) {
 
             stepId = getArguments().getInt(STEP_ID_ARG);
             steps = getArguments().getParcelableArrayList(STEP_LIST_ARG);
@@ -86,13 +83,14 @@ public class StepFragment extends Fragment {
                 buttonVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        DetailViewModel detailViewModel = ViewModelProviders.of(getActivity())
-                                .get(DetailViewModel.class);
+                        DetailViewModel detailViewModel = new ViewModelProvider(requireActivity())
+                            .get(DetailViewModel.class);
+
 
                         String videoTag = "video" + stepId;
                         VideoFragment videoFragment = (VideoFragment) getActivity()
-                                .getSupportFragmentManager()
-                                .findFragmentByTag(videoTag);
+                            .getSupportFragmentManager()
+                            .findFragmentByTag(videoTag);
 
                         if (videoFragment == null) {
                             String videoUrlString = steps.get(stepId).getVideoURL();
@@ -100,7 +98,7 @@ public class StepFragment extends Fragment {
                         }
 
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                                .beginTransaction();
+                            .beginTransaction();
 
                         int resId;
                         if (detailViewModel.isTwoPane()) {
@@ -127,9 +125,9 @@ public class StepFragment extends Fragment {
                     Log.d(TAG, "onCreateView: thumbnailUrl string is null or empty");
                 } else {
 
-                    Picasso.with(getActivity().getApplicationContext())
-                            .load(thumbnailUrl)
-                            .into(imageView);
+                    Picasso.get()
+                        .load(thumbnailUrl)
+                        .into(imageView);
                 }
 
             } else {

@@ -3,10 +3,6 @@ package com.eightmin4mile.goandroid.bakingapp.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by goandroid on 6/25/18.
- */
-
 public class Ingredient implements Parcelable {
 
     /*
@@ -27,7 +23,6 @@ public class Ingredient implements Parcelable {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
-
     }
 
     public double getQuantity() {

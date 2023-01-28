@@ -8,10 +8,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.eightmin4mile.goandroid.bakingapp.data.AppDatabase;
 import com.eightmin4mile.goandroid.bakingapp.data.Ingredient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,13 +34,12 @@ class IngredientRemoteViewsFactory implements RemoteViewsService.RemoteViewsFact
 
 
     Context mContext;
-    ArrayList<Ingredient> ingredients;
+    List<Ingredient> ingredients;
     String recipeName;
 
 
     public IngredientRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
-
 
         //recipeName = intent.getStringExtra("name");
 
@@ -67,7 +64,7 @@ class IngredientRemoteViewsFactory implements RemoteViewsService.RemoteViewsFact
     public void onDataSetChanged() {
 
         //how to initialize ingredients list
-        ingredients = IngredientWidgetProvider.ingredientArrayList;
+        ingredients = IngredientWidgetProvider.ingredientList;
 
     }
 
